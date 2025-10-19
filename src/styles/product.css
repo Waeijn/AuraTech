@@ -1,0 +1,27 @@
+/* Sprint 2: Member 5
+   Task: Product listing/detail basic layout. */
+
+.product-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 18px;
+}
+
+.product-card {
+  background: var(--surface);
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: var(--radius);
+  text-align: left;
+}
+
+.product-card__image img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.product-details img {
+  max-width: 400px;
+  display: block;
+}

@@ -1,0 +1,12 @@
+/* Sprint 4: Member 5
+   Task: Cart page styles skeleton. */
+
+.cart-page {
+  padding: 12px;
+}
+
+.cart-placeholder {
+  background: rgba(255,255,255,0.02);
+  padding: 16px;
+  border-radius: 8px;
+}

@@ -1,0 +1,13 @@
+/* Sprint 3: Member 5
+   Task: Authentication pages styling (Login/Register). */
+
+.auth-page {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.auth-page form {
+  display: grid;
+  gap: 12px;
+}

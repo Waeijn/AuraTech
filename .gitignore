@@ -1,0 +1,62 @@
+# ==============================
+# Ignore everything by default
+# ==============================
+*
+
+# ==============================
+# Allow source folders
+# ==============================
+!designs/
+!designs/**
+
+!public/
+!public/**
+
+!src/
+!src/**
+
+# ==============================
+# Allow essential root files
+# ==============================
+!.gitignore
+!package.json
+!package-lock.json
+!.dockerignore
+!Dockerfile
+!docker-compose.yml
+!docker-compose.prod.yml
+!nginx.conf
+!start-dev.ps1
+!start-prod.ps1
+
+# ==============================
+# Node & build ignores
+# ==============================
+node_modules/
+dist/
+build/
+.cache/
+coverage/
+
+# ==============================
+# Logs and temp
+# ==============================
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# ==============================
+# Environment files
+# ==============================
+.env
+.env.*
+*.local
+
+# ==============================
+# System / editor files
+# ==============================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
