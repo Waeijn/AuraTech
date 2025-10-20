@@ -11,7 +11,7 @@ export default function Navbar() {
       <div className="navbar__container">
         {/* Logo / Brand */}
         <div className="navbar__brand">
-          {/* Member 1 will provide logo */}
+          <img src="/img/logo/LOGO.png" alt="Logo" />
           <Link to="/">AuraTech</Link>
         </div>
 

@@ -2,15 +2,18 @@
 // Task: Basic Footer structure for site layout.
 // NOTE to Member 2: Footer styling controlled by Member 5.
 
-import "../styles/navbar.css";
+import "../styles/footer.css";
 
 export default function Footer() {
   return (
     <footer className="footer">
       <div className="footer__inner">
-        {/* Left: Brand / Tagline */}
+        {/* Left: Brand / Logo / Tagline */}
         <div className="footer__brand">
-          <h3>AuraTech</h3>
+          <div className="footer__logo">
+            <img src="/img/logo/LOGO.png" alt="AuraTech Logo" />
+            <h3>AuraTech</h3>
+          </div>
           <p>Gaming Gear — Built for Performance</p>
         </div>
 
