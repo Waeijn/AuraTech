@@ -8,16 +8,45 @@ import "../styles/navbar.css";
 export default function Navbar() {
   return (
     <header className="navbar">
-      <div className="navbar__brand">
-        {/* Member 1 will provide logo */}
-        <Link to="/">AuraTech</Link>
-      </div>
+      <div className="navbar__container">
+        {/* Logo / Brand */}
+        <div className="navbar__brand">
+          <img src="/img/logo/LOGO.png" alt="Logo" />
+          <Link to="/">AuraTech</Link>
+        </div>
 
-      <nav className="navbar__links">
-        <Link to="/products">Products</Link>
-        <Link to="/cart">Cart</Link>
-        <Link to="/login">Login</Link>
-      </nav>
+        {/* Search Bar */}
+        <div className="navbar__search">
+          <input
+            type="text"
+            placeholder="Search products..."
+            className="search-input"
+          />
+          <button className="search-btn">Search</button>
+        </div>
+
+        {/* Navigation Links */}
+        <nav className="navbar__links">
+          <Link to="/" className="nav-link">
+            Home
+          </Link>
+          <Link to="/products" className="nav-link">
+            Products
+          </Link>
+          <Link to="/cart" className="nav-link">
+            Cart
+          </Link>
+          <Link to="/checkout" className="nav-link">
+            Checkout
+          </Link>
+          <Link to="/login" className="nav-link">
+            Login
+          </Link>
+          <Link to="/register" className="nav-link">
+            Register
+          </Link>
+        </nav>
+      </div>
     </header>
   );
 }
