@@ -1,31 +1,43 @@
 // Sprint 1: Member 2
 // Task: Implement basic Navbar structure for navigation.
-// NOTE to Member 2: Add links to routes and integrate design from Member 1 in later sprints.
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import "../styles/navbar.css";
 
 export default function Navbar() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchTerm.trim() !== "") {
+      navigate(`/products?search=${encodeURIComponent(searchTerm)}`);
+      setSearchTerm("");
+    }
+  };
+
   return (
     <header className="navbar">
       <div className="navbar__container">
-        {/* Logo / Brand */}
         <div className="navbar__brand">
           <img src="/img/logo/LOGO.png" alt="Logo" />
           <Link to="/">AuraTech</Link>
         </div>
 
-        {/* Search Bar */}
-        <div className="navbar__search">
+        <form className="navbar__search" onSubmit={handleSearch}>
           <input
             type="text"
             placeholder="Search products..."
             className="search-input"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <button className="search-btn">Search</button>
-        </div>
+          <button type="submit" className="search-btn">
+            Search
+          </button>
+        </form>
 
-        {/* Navigation Links */}
         <nav className="navbar__links">
           <Link to="/" className="nav-link">
             Home
