@@ -22,7 +22,6 @@ export default function Footer() {
           <a href="/">Home</a>
           <a href="/products">Products</a>
           <a href="/cart">Cart</a>
-          <a href="/checkout">Checkout</a>
         </div>
 
         {/* Bottom: Copyright */}

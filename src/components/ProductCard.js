@@ -1,30 +1,48 @@
 // Sprint 2: Member 3
 // Task: Display individual product cards for Featured and ProductList components
+// Sprint 4: Member 4 - Implements Add to Cart logic with Quantity Modal trigger.
 
 import { useNavigate } from "react-router-dom";
+import productsData from "../data/products.json";
 import "../styles/product.css";
+const INVENTORY_KEY = 'temporary_inventory';
+
+const getInventory = () => {
+    let inventory = JSON.parse(localStorage.getItem(INVENTORY_KEY));
+    if (!inventory) {
+        const initialStock = {};
+        productsData.forEach(p => {
+            initialStock[p.id] = p.stock || 99999;
+        });
+        inventory = initialStock;
+        localStorage.setItem(INVENTORY_KEY, JSON.stringify(inventory));
+    }
+    return inventory;
+};
 
 export default function ProductCard({ product }) {
   const navigate = useNavigate();
 
-  // ✅ Add to Cart (store in localStorage for now)
-  const handleAddToCart = () => {
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const existingItem = cart.find((item) => item.id === product.id);
+  // ✅ Add to Cart
+  const handleAddToCart = (e) => {
+    e.stopPropagation(); 
 
-    if (existingItem) {
-      existingItem.quantity += 1;
+    getInventory();
+
+    if (window.showQuantityModal) {
+        window.showQuantityModal(product);
     } else {
-      cart.push({ ...product, quantity: 1 });
+        console.error("Quantity modal not initialized. Ensure the parent component is rendered.");
+        alert(`Modal not available. Add 1 x ${product.name} to cart.`);
     }
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-    alert(`${product.name} added to cart!`);
   };
 
   const handleViewDetails = () => {
-    navigate(`/products?search=${encodeURIComponent(product.name.toLowerCase())}`);
+    navigate(`/product/${product.id}`);
   };
+  
+  const inventory = getInventory();
+  const currentStock = inventory[product.id] || 0;
 
   return (
     <div className="product-card">
@@ -37,11 +55,11 @@ export default function ProductCard({ product }) {
 
       <p
         className={`product-stock ${
-          (product.stock ?? 15) > 0 ? "in-stock" : "out-of-stock"
+          currentStock > 0 ? "in-stock" : "out-of-stock"
         }`}
       >
-        {(product.stock ?? 15) > 0
-          ? `In Stock: ${product.stock ?? 15}`
+        {currentStock > 0
+          ? `In Stock: ${currentStock}`
           : "Out of Stock"}
       </p>
 
@@ -49,7 +67,7 @@ export default function ProductCard({ product }) {
         <button className="btn-main" onClick={handleViewDetails}>
           View Details
         </button>
-        <button className="btn-secondary" onClick={handleAddToCart}>
+        <button className="btn-secondary" onClick={handleAddToCart} disabled={currentStock === 0}>
           Add to Cart
         </button>
       </div>
