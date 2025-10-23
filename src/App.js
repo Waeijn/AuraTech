@@ -3,7 +3,7 @@
 // Member 5 will update routing when new pages are added. Keep routes simple and safe.
 
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
-import { AuthProvider } from "./components/Navbar";
+import Navbar, { AuthProvider, useAuth } from "./components/Navbar";
 
 import HomePage from "./pages/HomePage";
 import ProductList from "./pages/ProductList";
@@ -13,8 +13,13 @@ import Checkout from "./pages/Checkout";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 
-import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+
+const ProtectedRoute = ({ element: Element }) => {
+  const { currentUser } = useAuth();
+  return currentUser ? <Element /> : <Navigate to="/login" replace />;
+};
+
 
 function AppContent() {
   const location = useLocation();
@@ -28,8 +33,11 @@ function AppContent() {
           <Route path="/" element={<HomePage />} />
           <Route path="/products" element={<ProductList />} />
           <Route path="/product/:id" element={<ProductDetails />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />
+          
+          {/* Protected Routes: Require login for Cart and Checkout */}
+          <Route path="/cart" element={<ProtectedRoute element={Cart} />} />
+          <Route path="/checkout" element={<ProtectedRoute element={Checkout} />} />
+          
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="*" element={<Navigate to="/" replace />} />

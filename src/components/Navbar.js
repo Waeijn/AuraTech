@@ -128,9 +128,6 @@ export default function Navbar() {
           <Link to="/cart" className="nav-link">
             Cart
           </Link>
-          <Link to="/checkout" className="nav-link">
-            Checkout
-          </Link>
 
           {!currentUser ? (
             <>
