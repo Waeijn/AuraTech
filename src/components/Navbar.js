@@ -72,6 +72,21 @@ export default function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
+  const [isAuthPromptOpen, setIsAuthPromptOpen] = useState(false); 
+
+  // Handlers for Auth Prompt Modal
+  const handleCloseAuthPrompt = () => setIsAuthPromptOpen(false);
+  const handleLoginRedirect = () => {
+      handleCloseAuthPrompt();
+      navigate('/login');
+  }
+
+  const handleCartClick = (e) => {
+    if (!currentUser) {
+      e.preventDefault();
+      setIsAuthPromptOpen(true); 
+    }
+  };
 
   // Hide navbar on login/register pages
   if (location.pathname === "/login" || location.pathname === "/register") {
@@ -92,64 +107,84 @@ export default function Navbar() {
   };
 
   return (
-    <header className="navbar">
-      <div className="navbar__container">
-        <div className="navbar__brand">
-          <img
-            src="/img/logo/LOGO.png"
-            alt="Logo"
-            className="navbar__logo-img"
-          />
-          <Link to="/" className="navbar__brand-text">
-            AuraTech
-          </Link>
-        </div>
-
-        <form className="navbar__search" onSubmit={handleSearch}>
-          <input
-            type="text"
-            placeholder="Search products..."
-            className="search-input"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <button type="submit" className="search-btn">
-            Search
-          </button>
-        </form>
-
-        <nav className="navbar__links">
-          <Link to="/" className="nav-link">
-            Home
-          </Link>
-          <Link to="/products" className="nav-link">
-            Products
-          </Link>
-          <Link to="/cart" className="nav-link">
-            Cart
-          </Link>
-
-          {!currentUser ? (
-            <>
-              <Link to="/login" className="nav-link">
-                Login
-              </Link>
-              <Link to="/register" className="nav-link">
-                Register
-              </Link>
-            </>
-          ) : (
-            <>
-              <span className="nav-user-greeting">
-                Welcome, {currentUser.name}
-              </span>
-              <button onClick={handleLogout} className="nav-logout-btn">
-                Logout
+    <>
+      {isAuthPromptOpen && (
+        <div className={`modal-overlay open`}>
+          <div className="quantity-modal confirmation-modal">
+            <h2>Login Required</h2>
+            <p>You must be logged in to view your cart. Do you want to login now or stay on this page?</p>
+            
+            <div className="modal-actions">
+              <button className="btn-main" onClick={handleLoginRedirect}>
+                  Login
               </button>
-            </>
-          )}
-        </nav>
-      </div>
-    </header>
+              <button className="btn-cancel" onClick={handleCloseAuthPrompt}>
+                  Stay on Page
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      <header className="navbar">
+        <div className="navbar__container">
+          <div className="navbar__brand">
+            <img
+              src="/img/logo/LOGO.png"
+              alt="Logo"
+              className="navbar__logo-img"
+            />
+            <Link to="/" className="navbar__brand-text">
+              AuraTech
+            </Link>
+          </div>
+
+          <form className="navbar__search" onSubmit={handleSearch}>
+            <input
+              type="text"
+              placeholder="Search products..."
+              className="search-input"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <button type="submit" className="search-btn">
+              Search
+            </button>
+          </form>
+
+          <nav className="navbar__links">
+            <Link to="/" className="nav-link">
+              Home
+            </Link>
+            <Link to="/products" className="nav-link">
+              Products
+            </Link>
+            <Link to="/cart" className="nav-link" onClick={handleCartClick}> 
+              Cart
+            </Link>
+
+            {!currentUser ? (
+              <>
+                <Link to="/login" className="nav-link">
+                  Login
+                </Link>
+                <Link to="/register" className="nav-link">
+                  Register
+                </Link>
+              </>
+            ) : (
+              <>
+                <span className="nav-user-greeting">
+                  Welcome, {currentUser.name}
+                </span>
+                <button onClick={handleLogout} className="nav-logout-btn">
+                  Logout
+                </button>
+              </>
+            )}
+          </nav>
+        </div>
+      </header>
+    </>
   );
 }
