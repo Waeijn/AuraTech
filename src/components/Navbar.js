@@ -1,9 +1,18 @@
 // Sprint 1: Member 2
 // Task: Implement basic Navbar structure for navigation.
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+} from "react";
+
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import "../styles/navbar.css";
+
+import productData from "../data/products.json";
 
 const AuthContext = createContext();
 
@@ -71,24 +80,83 @@ export default function Navbar() {
   const { currentUser, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+
   const [searchTerm, setSearchTerm] = useState("");
-  const [isAuthPromptOpen, setIsAuthPromptOpen] = useState(false); 
+  const [isAuthPromptOpen, setIsAuthPromptOpen] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [results, setResults] = useState([]);
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  const searchWrapperRef = useRef(null);
 
   // Handlers for Auth Prompt Modal
   const handleCloseAuthPrompt = () => setIsAuthPromptOpen(false);
   const handleLoginRedirect = () => {
-      handleCloseAuthPrompt();
-      navigate('/login');
-  }
+    handleCloseAuthPrompt();
+    navigate("/login");
+  };
 
   const handleCartClick = (e) => {
     if (!currentUser) {
       e.preventDefault();
-      setIsAuthPromptOpen(true); 
+      setIsAuthPromptOpen(true);
     }
   };
+  useEffect(() => {
+    setProducts(productData);
+  }, []);
 
-  // Hide navbar on login/register pages
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  // Live filter
+  useEffect(() => {
+    if (searchTerm.trim() === "") {
+      setResults([]);
+      return;
+    }
+    const q = searchTerm.toLowerCase();
+    const filtered = products.filter((p) => p.name.toLowerCase().includes(q));
+    setResults(filtered.slice(0, 10));
+  }, [searchTerm, products]);
+
+  useEffect(() => {
+    if (location.pathname === "/products") {
+      if (debouncedSearchTerm.trim() !== "") {
+        navigate(
+          `/products?search=${encodeURIComponent(debouncedSearchTerm)}`,
+          {
+            replace: true,
+          }
+        );
+      } else {
+        navigate("/products", { replace: true });
+      }
+    }
+  }, [location.pathname, debouncedSearchTerm, navigate]);
+
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (
+        searchWrapperRef.current &&
+        !searchWrapperRef.current.contains(e.target)
+      ) {
+        setResults([]);
+      }
+      if (!e.target.closest(".user-dropdown")) {
+        setShowDropdown(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Hide Navbar on Login/Register pages
   if (location.pathname === "/login" || location.pathname === "/register") {
     return null;
   }
@@ -106,26 +174,35 @@ export default function Navbar() {
     }
   };
 
+  const handleSelectProduct = (product) => {
+    navigate(`/product/${product.id}`);
+    setSearchTerm("");
+    setResults([]);
+  };
+
   return (
     <>
       {isAuthPromptOpen && (
         <div className={`modal-overlay open`}>
           <div className="quantity-modal confirmation-modal">
             <h2>Login Required</h2>
-            <p>You must be logged in to view your cart. Do you want to login now or stay on this page?</p>
-            
+            <p>
+              You must be logged in to view your cart. Do you want to login now
+              or stay on this page?
+            </p>
+
             <div className="modal-actions">
               <button className="btn-main" onClick={handleLoginRedirect}>
-                  Login
+                Login
               </button>
               <button className="btn-cancel" onClick={handleCloseAuthPrompt}>
-                  Stay on Page
+                Stay on Page
               </button>
             </div>
           </div>
         </div>
       )}
-      
+
       <header className="navbar">
         <div className="navbar__container">
           <div className="navbar__brand">
@@ -139,18 +216,47 @@ export default function Navbar() {
             </Link>
           </div>
 
-          <form className="navbar__search" onSubmit={handleSearch}>
-            <input
-              type="text"
-              placeholder="Search products..."
-              className="search-input"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <button type="submit" className="search-btn">
-              Search
-            </button>
-          </form>
+          <div
+            className="navbar__search-wrapper"
+            ref={searchWrapperRef}
+            position="relative"
+          >
+            <form className="navbar__search" onSubmit={handleSearch}>
+              <input
+                type="text"
+                placeholder="Search products..."
+                className="search-input"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                aria-label="Search products"
+              />
+              <button type="submit" className="search-btn">
+                Search
+              </button>
+            </form>
+
+            {results.length > 0 && (
+              <ul
+                className="search-results-dropdown"
+                onMouseDown={(e) => e.preventDefault()}
+              >
+                {results.map((product) => (
+                  <li
+                    key={product.id}
+                    className="search-item"
+                    onClick={() => handleSelectProduct(product)}
+                  >
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="search-thumb"
+                    />
+                    <span className="search-name">{product.name}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
 
           <nav className="navbar__links">
             <Link to="/" className="nav-link">
@@ -159,7 +265,7 @@ export default function Navbar() {
             <Link to="/products" className="nav-link">
               Products
             </Link>
-            <Link to="/cart" className="nav-link" onClick={handleCartClick}> 
+            <Link to="/cart" className="nav-link" onClick={handleCartClick}>
               Cart
             </Link>
 
@@ -173,14 +279,47 @@ export default function Navbar() {
                 </Link>
               </>
             ) : (
-              <>
-                <span className="nav-user-greeting">
-                  Welcome, {currentUser.name}
-                </span>
-                <button onClick={handleLogout} className="nav-logout-btn">
-                  Logout
+              <div className="user-dropdown">
+                <button
+                  className="user-dropdown-toggle"
+                  onClick={() => setShowDropdown((prev) => !prev)}
+                >
+                  Hello, {currentUser.name}{" "}
+                  <span style={{ fontSize: "0.8rem" }}>▼</span>
                 </button>
-              </>
+
+                {showDropdown && (
+                  <ul className="user-dropdown-menu">
+                    <li>
+                      <Link
+                        to="/account"
+                        onClick={() => setShowDropdown(false)}
+                      >
+                        My Account
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/purchase-history"
+                        onClick={() => setShowDropdown(false)}
+                      >
+                        My Purchase
+                      </Link>
+                    </li>
+                    <li>
+                      <button
+                        className="logout-btn"
+                        onClick={() => {
+                          handleLogout();
+                          setShowDropdown(false);
+                        }}
+                      >
+                        Logout
+                      </button>
+                    </li>
+                  </ul>
+                )}
+              </div>
             )}
           </nav>
         </div>
