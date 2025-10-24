@@ -5,42 +5,63 @@
 import { useNavigate } from "react-router-dom";
 import productsData from "../data/products.json";
 import "../styles/product.css";
-const INVENTORY_KEY = 'temporary_inventory';
+
+const INVENTORY_KEY = "temporary_inventory";
 
 const getInventory = () => {
-    let inventory = JSON.parse(localStorage.getItem(INVENTORY_KEY));
-    if (!inventory) {
-        const initialStock = {};
-        productsData.forEach(p => {
-            initialStock[p.id] = p.stock || 99999;
-        });
-        inventory = initialStock;
-        localStorage.setItem(INVENTORY_KEY, JSON.stringify(inventory));
+  let inventory = JSON.parse(localStorage.getItem(INVENTORY_KEY));
+  const initialStock = {};
+
+  // Initialize stock for all products
+  productsData.forEach((p) => {
+    initialStock[p.id] = Number(p.stock) || 99999;
+  });
+
+  // If no inventory yet
+  if (!inventory) {
+    localStorage.setItem(INVENTORY_KEY, JSON.stringify(initialStock));
+    return initialStock;
+  }
+
+  // Update inventory for any new or corrected products
+  let updated = false;
+  productsData.forEach((p) => {
+    if (!(p.id in inventory)) {
+      inventory[p.id] = Number(p.stock) || 99999;
+      updated = true;
+    } else if (inventory[p.id] <= 0 && p.stock > 0) {
+      inventory[p.id] = Number(p.stock);
+      updated = true;
     }
-    return inventory;
+  });
+
+  if (updated) {
+    localStorage.setItem(INVENTORY_KEY, JSON.stringify(inventory));
+  }
+
+  return inventory;
 };
 
 export default function ProductCard({ product }) {
   const navigate = useNavigate();
 
-  // ✅ Add to Cart
   const handleAddToCart = (e) => {
-    e.stopPropagation(); 
+    e.stopPropagation();
 
     getInventory();
 
     if (window.showQuantityModal) {
-        window.showQuantityModal(product);
+      window.showQuantityModal(product);
     } else {
-        console.error("Quantity modal not initialized. Ensure the parent component is rendered.");
-        alert(`Modal not available. Add 1 x ${product.name} to cart.`);
+      console.error("Quantity modal not initialized. Ensure the parent component is rendered.");
+      alert(`Modal not available. Add 1 x ${product.name} to cart.`);
     }
   };
 
   const handleViewDetails = () => {
     navigate(`/product/${product.id}`);
   };
-  
+
   const inventory = getInventory();
   const currentStock = inventory[product.id] || 0;
 
@@ -58,16 +79,18 @@ export default function ProductCard({ product }) {
           currentStock > 0 ? "in-stock" : "out-of-stock"
         }`}
       >
-        {currentStock > 0
-          ? `In Stock: ${currentStock}`
-          : "Out of Stock"}
+        {currentStock > 0 ? `In Stock: ${currentStock}` : "Out of Stock"}
       </p>
 
       <div className="card-buttons">
         <button className="btn-main" onClick={handleViewDetails}>
           View Details
         </button>
-        <button className="btn-secondary" onClick={handleAddToCart} disabled={currentStock === 0}>
+        <button
+          className="btn-secondary"
+          onClick={handleAddToCart}
+          disabled={currentStock === 0}
+        >
           Add to Cart
         </button>
       </div>
