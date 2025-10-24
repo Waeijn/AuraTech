@@ -8,6 +8,7 @@ import "../styles/auth.css";
 
 export default function Login() {
   const { login } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -74,7 +75,7 @@ export default function Login() {
             Password
             <input
               name="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               value={formData.password}
               onChange={handleChange}
               required
@@ -82,7 +83,16 @@ export default function Login() {
               placeholder="Enter your password"
             />
           </label>
-          <button type="submit" className="form-button">
+          <button className="password-btn">
+            <input
+              type="checkbox"
+              checked={showPassword}
+              className="password-toggle"
+              onChange={() => setShowPassword((prev) => !prev)}
+            />{" "}
+            Show Password
+          </button>
+          <button type="submit" className="btn-main btn-login">
             Login
           </button>
         </form>
