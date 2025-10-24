@@ -1,0 +1,16 @@
+.account-page {
+  padding: 32px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.account-details {
+  margin-top: 20px;
+  border: 1px solid #eee;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.account-details h2 {
+  margin-bottom: 12px;
+}
