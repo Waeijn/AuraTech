@@ -7,14 +7,12 @@
   margin: 0 auto;
 }
 
-/* Forcing single column layout for stacking */
 .checkout-container {
   display: flex; 
   flex-direction: column; 
   margin-top: 20px;
 }
 
-/* Align the form to the max-width of the summary block and center it */
 .checkout-form {
   display: grid;
   gap: 15px;
@@ -53,9 +51,8 @@
   margin-top: 5px;
 }
 
-/* Style for read-only fields */
 .checkout-form input[readonly] {
-  background-color: #f1f1f1; /* Light gray to indicate disabled */
+  background-color: #f1f1f1; 
   cursor: not-allowed;
   border-color: #ccc;
   color: #666;
@@ -113,8 +110,6 @@
     background-color: #bbb;
 }
 
-
-/* Order Summary Styles (Now stacked below form) */
 .order-summary {
   width: 100%; 
   max-width: 400px; 
@@ -178,13 +173,11 @@
   white-space: nowrap;
 }
 
-/* Summary Calculations Wrapper */
 .summary-calculations { 
     display: flex;
     flex-direction: column;
 }
 
-/* Reusing cart summary styles */
 .summary-details .summary-row {
   display: flex;
   justify-content: space-between;
@@ -216,7 +209,6 @@
   opacity: 0.6;
 }
 
-/* RECEIPT STYLING */
 .thank-you-page {
     text-align: center;
     padding: 100px 20px;

@@ -15,7 +15,6 @@
   margin-bottom: 12px;
 }
 
-/* NEW: Style for the Purchase History button */
 .account-history-btn {
   display: inline-block;
   margin-top: 15px;
@@ -32,7 +31,6 @@
   background-color: #0056b3;
 }
 
-/* Added styles for shipping info */
 .shipping-details {
   margin-top: 30px;
 }
@@ -61,7 +59,6 @@
 }
 
 .shipping-details .btn-secondary {
-  /* Re-using existing style for the 'Edit' button */
   background-color: #f1f3f6;
   color: #123c7a;
   border: 1px solid #ddd;

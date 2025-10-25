@@ -6,7 +6,6 @@ import productsData from "../data/products.json";
 const PURCHASE_HISTORY_KEY = 'purchaseHistory';
 const INVENTORY_KEY = 'temporary_inventory';
 
-// --- Inventory Management Helpers ---
 const getInventory = () => {
     let inventory = JSON.parse(localStorage.getItem(INVENTORY_KEY));
     if (!inventory) {
@@ -35,7 +34,6 @@ const restockItems = (items) => {
     saveInventory(currentInventory);
     console.log("Stock successfully returned to temporary local inventory.");
 };
-// ----------------------------------------------------------
 
 // Helper to fetch history specific to the user
 const getPurchaseHistory = (userEmail) => {
@@ -43,7 +41,6 @@ const getPurchaseHistory = (userEmail) => {
     return allHistory.filter(order => order.userEmail === userEmail); 
 };
 
-// Component for rendering a single table
 const OrderTable = ({ title, orders, handleCancelOrder, handleConfirmDelivery, showActions = true }) => {
     if (orders.length === 0) {
         return (
@@ -90,7 +87,6 @@ const OrderTable = ({ title, orders, handleCancelOrder, handleConfirmDelivery, s
                             </td>
                             {showActions && ( 
                                 <td>
-                                    {/* Actions for "For Shipping" status */}
                                     {order.status === "For Shipping" && (
                                         <>
                                             <button 
@@ -154,9 +150,7 @@ export default function PurchaseHistory() {
     }
     
     const history = JSON.parse(localStorage.getItem(PURCHASE_HISTORY_KEY)) || [];
-    
-    // Status can be "For Shipping" or "Processing" in previous versions, 
-    // but should only allow cancel if it hasn't been delivered/completed
+
     const updatedHistory = history.map(order => {
         if (order.orderId === orderId && order.status === "For Shipping") {
             order.status = "Cancelled";
@@ -169,8 +163,6 @@ export default function PurchaseHistory() {
     localStorage.setItem(PURCHASE_HISTORY_KEY, JSON.stringify(updatedHistory));
     refreshHistory();
   };
-  
-  // NOTE: handleConfirmShipping (Ship Order) is removed as orders start at "For Shipping"
   
   const handleConfirmDelivery = (orderId) => {
     if (window.confirm(`Confirm that Order ID: ${orderId} has been received?`)) {
@@ -202,21 +194,19 @@ export default function PurchaseHistory() {
     <div className="purchase-history-container">
       <h1>My Orders</h1>
       <p>
-        This page tracks the current status of your active and past orders.
+        This tracks the current status of your active and past orders.
       </p>
-      
-      {/* 1. Active Orders Table - show actions */}
+
       <OrderTable 
-        title="Active Orders (For Shipping)"
+        title="Active Orders"
         orders={activeOrders}
         handleCancelOrder={handleCancelOrder}
         handleConfirmDelivery={handleConfirmDelivery}
         showActions={true} 
       />
-      
-      {/* 2. Completed History Table - HIDE ACTIONS */}
+
       <OrderTable 
-        title="Completed History (Delivered & Cancelled)"
+        title="Completed History"
         orders={completedHistory}
         handleCancelOrder={() => {}} 
         handleConfirmDelivery={() => {}}

@@ -1,4 +1,3 @@
-// src/pages/Profile.js
 // Sprint 3: Member 2 - Profile placeholder page
 
 import React, { useState, useEffect } from "react";
@@ -67,7 +66,6 @@ export default function Account() {
         <p>Name: <strong>{currentUser.name}</strong></p>
         <p>Email: <strong>{currentUser.email}</strong></p>
         
-        {/* NEW: Purchase History Link */}
         <Link to="/purchase-history" className="btn-main account-history-btn">
           View Purchase History
         </Link>

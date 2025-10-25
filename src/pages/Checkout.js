@@ -11,7 +11,7 @@ const INVENTORY_KEY = 'temporary_inventory';
 const PURCHASE_HISTORY_KEY = 'purchaseHistory';
 const SHIPPING_KEY_PREFIX = 'shippingInfo_';
 
-// Helper to get shipping info from localStorage (Reused from Account.js)
+// Helper to get shipping info from localStorage
 const getShippingInfo = (email) => {
     const key = SHIPPING_KEY_PREFIX + email;
     const stored = localStorage.getItem(key);
@@ -85,7 +85,6 @@ const savePurchaseToHistory = (orderData, userEmail) => {
         })),
         total: orderData.total,
         totalItemsCount: orderData.totalCount,
-        // STATUS CHANGE: Start orders directly at "For Shipping"
         status: "For Shipping",
     };
     
@@ -121,7 +120,6 @@ export default function Checkout() {
             address: shippingInfo.address || '',
             city: shippingInfo.city || '',
         }));
-        // Set address/city fields to read-only by default on mount
         setIsShippingEditing(false); 
     }
   }, [currentUser]);
@@ -135,7 +133,6 @@ export default function Checkout() {
 
   const handleSaveShipping = () => {
     if (currentUser && currentUser.email) {
-        // Save only address and city from formData to localStorage
         const { address, city } = formData;
         saveShippingInfo(currentUser.email, { address, city });
     }
@@ -145,7 +142,6 @@ export default function Checkout() {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    // Ensure form is not in edit mode when submitting
     if (isShippingEditing) {
         alert("Please save your shipping address changes or cancel editing before placing the order.");
         return;
@@ -258,7 +254,7 @@ export default function Checkout() {
                     value={formData.fullname} 
                     onChange={handleChange} 
                     required 
-                    readOnly={!!currentUser} // Always read-only if logged in
+                    readOnly={!!currentUser}
                 />
               </label>
               <label>
@@ -270,7 +266,7 @@ export default function Checkout() {
                     value={formData.email} 
                     onChange={handleChange} 
                     required 
-                    readOnly={!!currentUser} // Always read-only if logged in
+                    readOnly={!!currentUser}
                 />
               </label>
 
