@@ -8,6 +8,7 @@ import "../styles/auth.css";
 
 export default function Register() {
   const { register } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -113,7 +114,7 @@ export default function Register() {
             Password
             <input
               name="password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               value={formData.password}
               onChange={handleChange}
               required
@@ -125,7 +126,7 @@ export default function Register() {
             Confirm Password
             <input
               name="confirmPassword"
-              type="password"
+              type={showPassword ? "text" : "password"}
               value={formData.confirmPassword}
               onChange={handleChange}
               required
@@ -133,6 +134,15 @@ export default function Register() {
               placeholder="Confirm your password"
             />
           </label>
+          <button className="password-btn">
+            <input
+              type="checkbox"
+              className="password-toggle"
+              checked={showPassword}
+              onChange={() => setShowPassword((prev) => !prev)}
+            />{" "}
+            Show Password
+          </button>
           <button type="submit" className="form-button">
             Register
           </button>
