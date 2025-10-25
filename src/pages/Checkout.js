@@ -1,12 +1,28 @@
 // Sprint 4: Member 4
 // Task: Implement Checkout form, display receipt, and deduct stock from local storage.
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useAuth } from "../components/Navbar";
 import "../styles/checkout.css";
 import productsData from "../data/products.json"; 
 
 const SHIPPING_RATE = 0.10;
 const INVENTORY_KEY = 'temporary_inventory';
+const PURCHASE_HISTORY_KEY = 'purchaseHistory';
+const SHIPPING_KEY_PREFIX = 'shippingInfo_';
+
+// Helper to get shipping info from localStorage
+const getShippingInfo = (email) => {
+    const key = SHIPPING_KEY_PREFIX + email;
+    const stored = localStorage.getItem(key);
+    return stored ? JSON.parse(stored) : { address: "", city: "" };
+};
+
+// Helper to save shipping info to localStorage (Reused from Account.js)
+const saveShippingInfo = (email, data) => {
+    const key = SHIPPING_KEY_PREFIX + email;
+    localStorage.setItem(key, JSON.stringify(data));
+};
 
 const getInventory = () => {
     let inventory = JSON.parse(localStorage.getItem(INVENTORY_KEY));
@@ -54,11 +70,59 @@ const deductStockAndSave = (purchasedItems) => {
     console.log("Stock successfully deducted from temporary local inventory.");
 };
 
+const savePurchaseToHistory = (orderData, userEmail) => {
+    const history = JSON.parse(localStorage.getItem(PURCHASE_HISTORY_KEY)) || [];
+    
+    const newOrder = {
+        orderId: `AT-${Date.now().toString().slice(-8)}`,
+        date: new Date().toLocaleDateString('en-CA'),
+        userEmail: userEmail,
+        items: orderData.checkedItems.map(item => ({
+            id: item.id,
+            name: item.name,
+            quantity: item.quantity,
+            price: item.price,
+        })),
+        total: orderData.total,
+        totalItemsCount: orderData.totalCount,
+        status: "For Shipping",
+    };
+    
+    history.unshift(newOrder);
+    localStorage.setItem(PURCHASE_HISTORY_KEY, JSON.stringify(history));
+    return newOrder.orderId;
+};
 
 export default function Checkout() {
-  const [formData, setFormData] = useState({ fullname: '', email: '', address: '', city: '' });
+  const { currentUser } = useAuth();
+  const [isShippingEditing, setIsShippingEditing] = useState(false);
+  
+  // Initialize formData with user name/email from AuthContext and shipping info from localStorage
+  const initialFormData = {
+      fullname: currentUser?.name || '',
+      email: currentUser?.email || '',
+      address: '', 
+      city: '',
+  };
+  
+  const [formData, setFormData] = useState(initialFormData);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [receiptData, setReceiptData] = useState({ total: 0, totalCount: 0, email: '' });
+  const [receiptData, setReceiptData] = useState({ total: 0, totalCount: 0, email: '', orderId: '' });
+  
+  // Effect to load shipping info and update form when currentUser changes/mounts
+  useEffect(() => {
+    if (currentUser) {
+        const shippingInfo = getShippingInfo(currentUser.email);
+        setFormData(prev => ({
+            ...prev,
+            fullname: currentUser.name,
+            email: currentUser.email,
+            address: shippingInfo.address || '',
+            city: shippingInfo.city || '',
+        }));
+        setIsShippingEditing(false); 
+    }
+  }, [currentUser]);
   
   const { checkedItems, checkedSubtotal, shippingFee, total, totalCount } = calculateCheckoutTotals();
 
@@ -67,9 +131,22 @@ export default function Checkout() {
     setFormData(prev => ({ ...prev, [name]: value }));
   }
 
+  const handleSaveShipping = () => {
+    if (currentUser && currentUser.email) {
+        const { address, city } = formData;
+        saveShippingInfo(currentUser.email, { address, city });
+    }
+    setIsShippingEditing(false);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     
+    if (isShippingEditing) {
+        alert("Please save your shipping address changes or cancel editing before placing the order.");
+        return;
+    }
+
     const finalOrder = calculateCheckoutTotals();
 
     if (finalOrder.checkedItems.length === 0) {
@@ -77,12 +154,17 @@ export default function Checkout() {
         return;
     }
     
+    // Deduct stock and save purchase history
     deductStockAndSave(finalOrder.checkedItems);
+    
+    const userEmail = currentUser ? currentUser.email : formData.email; 
+    const orderId = savePurchaseToHistory(finalOrder, userEmail); 
     
     setReceiptData({
         total: finalOrder.total,
         totalCount: finalOrder.totalCount,
-        email: formData.email,
+        email: userEmail,
+        orderId: orderId,
     });
 
     const finalCart = (JSON.parse(localStorage.getItem('cart')) || [])
@@ -98,6 +180,7 @@ export default function Checkout() {
               <h1>Order Placed!</h1>
               <div className="receipt-box">
                   <h3>Purchase Receipt</h3>
+                  <p className="receipt-message-header">Order ID: {receiptData.orderId}</p>
                   <p className="receipt-total">Total Charged:</p>
                   <p className="receipt-amount">₱{receiptData.total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                   
@@ -165,22 +248,71 @@ export default function Checkout() {
               
               <label>
                 Full Name
-                <input name="fullname" placeholder="John Doe" value={formData.fullname} onChange={handleChange} required />
+                <input 
+                    name="fullname" 
+                    placeholder="John Doe" 
+                    value={formData.fullname} 
+                    onChange={handleChange} 
+                    required 
+                    readOnly={!!currentUser}
+                />
               </label>
               <label>
                 Email
-                <input name="email" type="email" placeholder="you@example.com" value={formData.email} onChange={handleChange} required />
+                <input 
+                    name="email" 
+                    type="email" 
+                    placeholder="you@example.com" 
+                    value={formData.email} 
+                    onChange={handleChange} 
+                    required 
+                    readOnly={!!currentUser}
+                />
               </label>
+
               <label>
                 Address
-                <input name="address" placeholder="Shipping address" value={formData.address} onChange={handleChange} required />
+                <input 
+                    name="address" 
+                    placeholder="Shipping address" 
+                    value={formData.address} 
+                    onChange={handleChange} 
+                    required 
+                    readOnly={!!currentUser && !isShippingEditing} 
+                />
               </label>
               <label>
                 City
-                <input name="city" placeholder="e.g., Manila" value={formData.city} onChange={handleChange} required />
+                <input 
+                    name="city" 
+                    placeholder="e.g., Manila" 
+                    value={formData.city} 
+                    onChange={handleChange} 
+                    required 
+                    readOnly={!!currentUser && !isShippingEditing} 
+                />
               </label>
 
-              <button type="submit" className="btn-main checkout-btn">
+              {currentUser && (
+                  <div className="shipping-edit-controls">
+                      {isShippingEditing ? (
+                          <>
+                              <button type="button" className="btn-save-shipping" onClick={handleSaveShipping}>
+                                  Save Address
+                              </button>
+                              <button type="button" className="btn-cancel" onClick={() => setIsShippingEditing(false)}>
+                                  Cancel Edit
+                              </button>
+                          </>
+                      ) : (
+                          <button type="button" className="btn-secondary" onClick={() => setIsShippingEditing(true)}>
+                              Edit Address
+                          </button>
+                      )}
+                  </div>
+              )}
+
+              <button type="submit" className="btn-main checkout-btn" disabled={isShippingEditing}>
                 Place Order (₱{total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })})
               </button>
             </form>

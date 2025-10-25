@@ -7,14 +7,12 @@
   margin: 0 auto;
 }
 
-/* Forcing single column layout for stacking */
 .checkout-container {
   display: flex; 
   flex-direction: column; 
   margin-top: 20px;
 }
 
-/* Align the form to the max-width of the summary block and center it */
 .checkout-form {
   display: grid;
   gap: 15px;
@@ -53,7 +51,65 @@
   margin-top: 5px;
 }
 
-/* Order Summary Styles (Now stacked below form) */
+.checkout-form input[readonly] {
+  background-color: #f1f1f1; 
+  cursor: not-allowed;
+  border-color: #ccc;
+  color: #666;
+}
+
+.shipping-edit-controls {
+  display: flex;
+  gap: 10px;
+  grid-column: 1 / -1; 
+}
+
+.shipping-edit-controls .btn-secondary,
+.shipping-edit-controls .btn-save-shipping {
+    flex: 1;
+    font-size: 0.9rem;
+    padding: 10px;
+    font-weight: 600;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.shipping-edit-controls .btn-secondary {
+    background-color: #f1f3f6;
+    color: #123c7a;
+}
+
+.shipping-edit-controls .btn-secondary:hover {
+    background-color: #e2e6ee;
+}
+
+.shipping-edit-controls .btn-save-shipping {
+    background-color: var(--accent);
+    color: white;
+}
+
+.shipping-edit-controls .btn-save-shipping:hover {
+    background-color: #0056b3;
+}
+
+.shipping-edit-controls .btn-cancel {
+    background-color: #ccc;
+    color: #555;
+    border: none;
+    font-size: 0.9rem;
+    padding: 10px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.shipping-edit-controls .btn-cancel:hover {
+    background-color: #bbb;
+}
+
 .order-summary {
   width: 100%; 
   max-width: 400px; 
@@ -117,13 +173,11 @@
   white-space: nowrap;
 }
 
-/* Summary Calculations Wrapper */
 .summary-calculations { 
     display: flex;
     flex-direction: column;
 }
 
-/* Reusing cart summary styles */
 .summary-details .summary-row {
   display: flex;
   justify-content: space-between;
@@ -150,7 +204,11 @@
   margin-top: 20px;
 }
 
-/* RECEIPT STYLING */
+.checkout-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 .thank-you-page {
     text-align: center;
     padding: 100px 20px;
@@ -193,10 +251,7 @@
     color: #666;
 }
 
-
-/* Responsive adjustments */
 @media (max-width: 768px) {
-    /* Reset order on small screens to ensure logical stacking */
     .checkout-form, .order-summary {
         order: initial;
         margin: 0 auto 20px auto; 

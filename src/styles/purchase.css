@@ -43,3 +43,99 @@
 .purchase-history-table tr:hover {
   background-color: #f9f9f9;
 }
+
+.purchase-history-table ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.9em;
+}
+
+.purchase-history-table li {
+  padding: 2px 0;
+  white-space: nowrap;
+}
+
+.status-delivered {
+  color: #155724;
+  background-color: #d4edda;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 0.9em;
+}
+
+.status-for-shipping {
+  color: #086972;
+  background-color: #e0f7fa;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 0.9em;
+}
+
+.status-shipped {
+  color: #856404;
+  background-color: #fff3cd;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 0.9em;
+}
+
+.status-processing {
+  color: #004085;
+  background-color: #cce5ff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 0.9em;
+}
+
+.status-cancelled {
+  color: #721c24;
+  background-color: #f8d7da;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 0.9em;
+}
+
+.btn-action-primary {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85em;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+}
+
+.btn-action-primary:hover {
+  background-color: #0056b3;
+}
+
+.btn-cancel-order {
+  background-color: #d9534f; 
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85em;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+}
+
+.btn-cancel-order:hover {
+  background-color: #c9302c;
+}
+
+.btn-cancel-order:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
