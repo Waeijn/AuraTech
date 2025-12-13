@@ -1,0 +1,518 @@
+/*  AuraTech Checkout Page Styles  */
+
+.checkout-page {
+  width: 100%;
+  min-height: 100vh;
+  padding: 40px clamp(20px, 6vw, 60px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--color-bg-primary);
+  /* Subtle grid pattern background for texture */
+  background-image: linear-gradient(
+      to right,
+      rgba(123, 125, 138, 0.06) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, rgba(123, 125, 138, 0.06) 1px, transparent 1px);
+  background-size: 45px 45px;
+}
+
+.checkout-page h1 {
+  font-size: 2.6rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin-bottom: 40px;
+  text-align: center;
+  position: relative;
+  display: inline-block;
+}
+
+/* Gradient underline accent for the main title */
+.checkout-page h1::after {
+  content: "";
+  display: block;
+  width: 300px;
+  height: 6px;
+  margin: 12px auto 0 auto;
+  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--color-accent),
+    var(--color-secondary-accent)
+  );
+}
+
+/*  Two-Column Layout (Form and Summary) */
+.checkout-container {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr; /* Form panel slightly larger */
+  gap: 40px;
+  max-width: 1200px;
+  width: 100%;
+  padding-bottom: 60px; /* Space at the bottom */
+}
+
+/*  Left Panel: Shipping Form */
+.checkout-form {
+  background: var(--color-surface);
+  padding: 35px 40px;
+  border-radius: var(--radius);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+.checkout-form h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 5px;
+  color: var(--color-text-primary);
+}
+
+/* Input Styling */
+.checkout-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-text-primary);
+}
+
+.checkout-form input {
+  width: 100%;
+  margin: 0;
+  padding: 12px 10px;
+  border-radius: 8px;
+  border: 1.3px solid rgba(0, 0, 0, 0.1);
+  background: #fafafa;
+  color: var(--color-text-primary);
+  font-size: 0.9rem;
+  transition: all 0.25s ease;
+  box-sizing: border-box;
+}
+
+/* Focus style for editable inputs */
+.checkout-form input:focus:not([readonly]) {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px rgba(0, 151, 167, 0.25);
+  background: #fff;
+  outline: none;
+}
+
+/* Styling for read-only fields (logged-in user) */
+.checkout-form input[readonly] {
+  background-color: #f2f2f2;
+  color: #666;
+  opacity: 0.9;
+  cursor: default;
+}
+
+/* Shipping edit controls (logged-in users only) */
+.shipping-edit-controls {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  margin-top: 5px;
+  margin-right: 0;
+}
+
+.shipping-edit-controls .btn-main,
+.shipping-edit-controls .btn-cancel,
+.shipping-edit-controls .btn-secondary {
+  flex: 0 0 auto;
+  padding: 8px 18px;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  font-weight: 600;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Place Order Button */
+.checkout-btn {
+  width: 100%;
+  align-self: center;
+  margin-top: 18px;
+  padding: 12px 16px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  background: linear-gradient(
+    90deg,
+    var(--color-accent),
+    var(--color-secondary-accent)
+  );
+  box-shadow: 0 4px 14px rgba(0, 151, 167, 0.25);
+  transition: all 0.25s ease;
+}
+
+.checkout-btn:hover:not(:disabled) {
+  filter: brightness(1.08);
+  transform: translateY(-2px);
+}
+
+.checkout-btn:disabled {
+  background: #ccc;
+  color: #444;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* Cancel Button (Return to Cart) */
+.cancel-btn {
+  width: 100%;
+  align-self: center;
+  margin-top: 10px;
+  padding: 12px 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: var(--radius);
+  background: transparent;
+  border: 1.5px solid var(--color-border);
+  color: var(--color-border);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancel-btn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+/* Validation and Helper Messages */
+.validation-warning {
+  font-size: 0.9rem;
+  color: var(--color-secondary-accent);
+  font-weight: 500;
+  text-align: center;
+  margin-top: 5px;
+}
+
+.helper-message {
+  color: var(--color-border);
+  font-style: italic;
+  font-size: 0.85rem;
+  margin-top: 4px;
+  text-align: center;
+}
+
+/* Right Panel: Dark Order Summary */
+.order-summary {
+  background: var(--color-text-primary);
+  color: var(--color-surface);
+  padding: 35px;
+  border-radius: var(--radius);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
+  height: fit-content;
+  box-sizing: border-box;
+}
+
+.order-summary h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-surface);
+  margin-bottom: 20px;
+  border-bottom: 3px solid var(--color-accent);
+  padding-bottom: 10px;
+}
+
+/* Order items in summary list */
+.summary-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.summary-item img {
+  width: 50px;
+  height: 50px;
+  border-radius: 6px;
+  object-fit: contain;
+  background: var(--color-bg-primary);
+}
+
+.summary-item-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.summary-item-details h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--color-surface);
+}
+
+.summary-item-details p {
+  font-size: 0.8rem;
+  color: #ccc;
+  margin: 0;
+}
+
+.summary-item-price {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-accent);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Totals Calculations */
+.summary-calculations-wrapper {
+  margin-top: 20px;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 1rem;
+  color: var(--color-surface);
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.summary-total {
+  border-top: 2px solid rgba(255, 255, 255, 0.1);
+  padding-top: 15px;
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.summary-total h3 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--color-surface);
+}
+
+.summary-total h3:last-child {
+  color: var(--color-secondary-accent);
+}
+
+@media (max-width: 900px) {
+  .checkout-container {
+    /* Stack columns vertically on tablet/mobile */
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+
+  /* Ensures all inputs/buttons remain full width (100% is set above, this reinforces it) */
+  .checkout-form,
+  .order-summary {
+    padding: 28px;
+  }
+
+  .shipping-edit-controls {
+    /* Reset alignment for full width flow */
+    justify-content: space-between;
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .checkout-page {
+    /* Reduced page padding on the smallest screens */
+    padding: 20px 15px;
+  }
+
+  .checkout-page h1 {
+    font-size: 2rem;
+    margin-bottom: 30px;
+  }
+  .checkout-page h1::after {
+    width: 200px;
+    height: 4px;
+    margin: 8px auto 0 auto;
+  }
+  .checkout-form,
+  .order-summary {
+    /* Reduced padding inside card containers */
+    padding: 20px;
+  }
+  .summary-item img {
+    width: 40px;
+    height: 40px;
+  }
+  .summary-item-details h4 {
+    font-size: 0.85rem;
+  }
+}
+
+.checkout-form h2 {
+  margin-top: 10px; /* Spacing for the "Payment Method" header */
+}
+
+.payment-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.95rem;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  padding: 10px 12px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.radio-label:hover {
+  background: #f0f0f0;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+.radio-label input[type="radio"] {
+  width: auto; /* Stop it from being 100% width */
+  margin: 0; /* Remove default margins */
+  height: 18px; /* Set fixed size */
+  width: 18px;
+  accent-color: var(--color-accent); /* Make it match your purple/teal theme */
+  cursor: pointer;
+}
+
+/* Thank You / Receipt Page */
+.thank-you-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  text-align: center;
+  background-image: none;
+  background-color: #f8f9fa;
+}
+
+.thank-you-page h1 {
+  font-size: 3rem;
+  margin-bottom: 30px;
+}
+
+.thank-you-page h1::after {
+  margin: 15px auto 0;
+}
+
+.receipt-box {
+  background: #ffffff;
+  width: 100%;
+  max-width: 600px;
+  padding: 50px;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+  margin-bottom: 40px;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.receipt-box h3 {
+  font-size: 1.5rem;
+  margin-bottom: 30px;
+  color: #333;
+  font-weight: 700;
+  border-bottom: 2px dashed #eee;
+  padding-bottom: 15px;
+}
+
+.receipt-message-header {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.receipt-total {
+  font-size: 1rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 20px;
+}
+
+.receipt-amount {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--color-secondary-accent);
+  margin: 5px 0 20px 0;
+}
+
+.thank-you-page .btn-main {
+  width: auto !important;
+  min-width: 180px;
+  height: auto !important;
+  padding: 12px 24px;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 20px;
+  box-shadow: 0 6px 15px rgba(108, 92, 231, 0.25);
+  transition: transform 0.2s ease;
+}
+
+.thank-you-page .btn-main:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(108, 92, 231, 0.35);
+}
+
+/* === Responsive Adjustments === */
+@media (max-width: 900px) {
+  .checkout-container {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+
+  .checkout-form,
+  .order-summary {
+    padding: 28px;
+  }
+
+  .shipping-edit-controls {
+    justify-content: space-between;
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .checkout-page {
+    padding: 20px 15px;
+  }
+
+  .checkout-page h1 {
+    font-size: 2rem;
+    margin-bottom: 30px;
+  }
+
+  .checkout-page h1::after {
+    width: 200px;
+    height: 4px;
+  }
+
+  .checkout-form,
+  .order-summary {
+    padding: 20px;
+  }
+
+  .summary-item img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .summary-item-details h4 {
+    font-size: 0.85rem;
+  }
+}
