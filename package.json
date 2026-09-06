@@ -1,0 +1,13 @@
+{
+  "name": "auratech-workspace",
+  "version": "1.0.0",
+  "description": "Root workspace for Auratech",
+  "scripts": {
+    "start": "docker-compose up -d",
+    "stop": "docker-compose down",
+    "restart": "docker-compose down && docker-compose up -d",
+    "logs": "docker-compose logs -f",
+    "frontend:logs": "docker-compose logs -f frontend",
+    "backend:logs": "docker-compose logs -f backend"
+  }
+}

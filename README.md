@@ -17,16 +17,21 @@ Both the frontend and backend are containerized using Docker. You can find `Dock
 
 ### Running the Application
 
-To run the application, navigate to each directory and use `docker-compose` or the provided scripts.
+We use a unified `docker-compose.yml` at the root of the project to orchestrate all services simultaneously.
 
-#### Frontend
+To start the entire application (Frontend, Backend, MySQL, and phpMyAdmin), simply run:
+
 ```bash
-cd auratech-frontend
 docker-compose up -d
 ```
 
-#### Backend
+#### Services & Ports
+- **Frontend (React):** [http://localhost:4000](http://localhost:4000)
+- **Backend API (Laravel):** [http://localhost:8082](http://localhost:8082)
+- **Database (MySQL):** `localhost:3307`
+- **phpMyAdmin:** [http://localhost:8081](http://localhost:8081)
+
+To stop the application, run:
 ```bash
-cd auratech-backend
-docker-compose up -d
+docker-compose down
 ```

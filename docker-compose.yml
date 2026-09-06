@@ -1,0 +1,70 @@
+services:
+  # Frontend Service
+  frontend:
+    image: node:20-alpine
+    container_name: auratech-frontend
+    working_dir: /app
+    volumes:
+      - ./auratech-frontend:/app
+      - frontend_node_modules:/app/node_modules
+    ports:
+      - "4000:4000"
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+      - FAST_REFRESH=true
+      - PORT=4000
+    command: sh -c "npm install && npm start"
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Backend Service
+  backend:
+    build:
+      context: ./auratech-backend
+      dockerfile: Dockerfile
+    container_name: auratech-api-server
+    ports:
+      - "8082:80"
+    volumes:
+      - ./auratech-backend/src:/var/www/html
+    depends_on:
+      - db
+
+  # Database Service (MySQL)
+  db:
+    image: mysql:8.0
+    container_name: auratech-mysql-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: auratech_db
+      MYSQL_USER: auratech_user
+      MYSQL_PASSWORD: auratech_pass
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  # phpMyAdmin
+  pma:
+    image: phpmyadmin/phpmyadmin
+    container_name: auratech-phpmyadmin
+    restart: always
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: root
+    depends_on:
+      - db
+
+volumes:
+  db_data:
+  frontend_node_modules:
