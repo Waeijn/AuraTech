@@ -1,0 +1,28 @@
+# Auratech Project Agent Rules
+
+You are assisting with the Auratech full-stack application. Please adhere to the following rules to ensure a smooth development process for the team.
+
+## General Project Context
+- **Frontend:** React with Bootstrap (`auratech-frontend/`).
+- **Backend:** PHP 8.3 + Laravel (`auratech-backend/`).
+- **Infrastructure:** Docker and docker-compose. The unified `docker-compose.yml` is located at the project root.
+
+## Development Workflow
+1. **Never commit or push changes automatically.** Always present the changes to the user so they can review and test them locally first.
+2. **Task Runner:** Utilize the root `package.json` for managing the application state (e.g., `npm start`, `npm stop`). Do not manually cd into backend/frontend directories to run docker commands unless strictly necessary.
+3. **Monorepo Awareness:** Always verify which part of the stack (frontend vs backend) a task belongs to before modifying files.
+
+## Git Conventions
+When proposing or making commits, strictly follow the Conventional Commits specification. Use the following commit types:
+- **feat:** A new feature for the user or a significant addition to the codebase.
+- **fix:** A bug fix.
+- **docs:** Documentation only changes (e.g., README.md, .agentrules).
+- **style:** Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc).
+- **refactor:** A code change that neither fixes a bug nor adds a feature.
+- **perf:** A code change that improves performance.
+- **test:** Adding missing tests or correcting existing tests.
+- **chore:** Changes to the build process or auxiliary tools and libraries (e.g., updating dependencies, modifying Docker configurations).
+
+## Communication
+- Keep explanations concise but informative.
+- Highlight any architectural changes or dependency additions explicitly.
