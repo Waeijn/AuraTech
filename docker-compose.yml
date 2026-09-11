@@ -10,8 +10,6 @@ services:
     ports:
       - "4000:4000"
     environment:
-      - CHOKIDAR_USEPOLLING=true
-      - WATCHPACK_POLLING=true
       - FAST_REFRESH=true
       - PORT=4000
     command: sh -c "npm install && npm start"
@@ -34,6 +32,7 @@ services:
       - "8082:80"
     volumes:
       - ./auratech-backend/src:/var/www/html
+      - backend_vendor:/var/www/html/vendor
     depends_on:
       - db
 
@@ -69,3 +68,4 @@ volumes:
   auratech-backend_auratech_db_data:
     external: true
   frontend_node_modules:
+  backend_vendor:
