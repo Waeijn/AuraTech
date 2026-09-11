@@ -42,6 +42,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users', [AuthController::class, 'index']);
     Route::delete('/users/{user}', [AuthController::class, 'destroy']);
     Route::put('/users/{user}', [AuthController::class, 'update']);
+
+    // ADMIN: Dashboard Stats
+    Route::get('/admin/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'stats']);
 });
 
 // Catalog Routes

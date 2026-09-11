@@ -1,4 +1,4 @@
-export const API_BASE_URL = "http://localhost:8082/api";
+export const API_BASE_URL = "http://127.0.0.1:8082/api";
 
 export const API_ENDPOINTS = {
   // Auth
@@ -6,6 +6,9 @@ export const API_ENDPOINTS = {
   LOGIN: "/login",
   LOGOUT: "/logout",
   ME: "/me",
+
+  // Admin
+  DASHBOARD: "/admin/dashboard",
 
   // Products
   PRODUCTS: "/products",

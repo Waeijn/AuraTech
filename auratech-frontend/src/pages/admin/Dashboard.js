@@ -3,7 +3,7 @@ import AdminLayout from "../../components/AdminLayout";
 import { orderService } from "../../services/orderService";
 import { productService } from "../../services/productService";
 import { api } from "../../utils/api";
-
+import { API_ENDPOINTS } from "../../config/api";
 // Skeleton component for an individual stat card
 const AdminCardSkeleton = () => (
   <div className="admin-card skeleton-card">
@@ -91,54 +91,19 @@ export default function Dashboard() {
 
   const loadDashboardStats = async () => {
     try {
-      // Fetch real data from APIs
-      const orderRes = await orderService.getAll();
-      const orders = orderRes.data || [];
-
-      const productRes = await productService.getAll();
-      const products = Array.isArray(productRes.data)
-        ? productRes.data
-        : productRes.data?.data || [];
-
-      // Fetch users count if possible, otherwise rely on local fallback or simple API
-      let usersCount = 0;
-      try {
-        const userRes = await api.get("/users");
-        usersCount = userRes.data?.length || 0;
-      } catch (e) {
-        console.warn("User stats fetch failed");
-      }
-
-      // Calculate Stats from real data
-      const totalSales = orders
-        .filter((order) => (order.status || "").toLowerCase() !== "cancelled")
-        .reduce(
-          (sum, order) => sum + (order.total_amount || order.total || 0),
-          0
-        );
-
-      const newOrders = orders.filter(
-        (o) => (o.status || "").toLowerCase() === "pending"
-      ).length;
-
-      const criticalStock = products.filter((p) => (p.stock || 0) <= 5).length;
+      // Fetch pre-calculated stats directly from the backend
+      const response = await api.get(API_ENDPOINTS.DASHBOARD);
+      const data = response.data;
 
       setStats({
-        totalSales,
-        newOrders,
-        pendingUsers: usersCount,
-        criticalStock,
+        totalSales: data.totalSales || 0,
+        newOrders: data.newOrders || 0,
+        pendingUsers: data.pendingUsers || 0,
+        criticalStock: data.criticalStock || 0,
         loading: false,
       });
 
-      // Get recent activity
-      const recentOrders = [...orders]
-        .sort(
-          (a, b) =>
-            new Date(b.created_at || b.date) - new Date(a.created_at || a.date)
-        )
-        .slice(0, 5);
-      setRecentActivity(recentOrders);
+      setRecentActivity(data.recentActivity || []);
     } catch (error) {
       console.error("Error loading stats:", error);
       setStats((prev) => ({ ...prev, loading: false }));
