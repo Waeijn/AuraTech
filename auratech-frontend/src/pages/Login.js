@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { authService } from "../services/authService";
 import { isAdmin } from "../utils/auth"; // Use Mades's Helper
 import "../styles/auth.css";
 
 export default function Login() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
@@ -42,9 +43,9 @@ export default function Login() {
 
       setTimeout(() => {
         if (adminCheck) {
-          window.location.href = "/admin";
+          navigate("/admin");
         } else {
-          window.location.href = "/";
+          navigate("/");
         }
       }, 1000);
     } catch (error) {
