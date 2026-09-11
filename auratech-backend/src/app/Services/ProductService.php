@@ -10,43 +10,48 @@ class ProductService
 {
     public function getFilteredProducts(array $filters, int $perPage): LengthAwarePaginator
     {
-        $query = Product::with(['category', 'images']);
+        $page = request()->get('page', 1);
+        $cacheKey = 'products:' . md5(json_encode($filters) . '_' . $perPage . '_' . $page);
 
-        $query->where('stock', '>', 0);
+        return \Illuminate\Support\Facades\Cache::remember($cacheKey, now()->addMinutes(60), function () use ($filters, $perPage) {
+            $query = Product::with(['category', 'images']);
 
-        // Filter by category
-        if (!empty($filters['category_id'])) {
-            $query->where('category_id', $filters['category_id']);
-        }
+            $query->where('stock', '>', 0);
 
-        // Search by name or description
-        if (!empty($filters['search'])) {
-            $search = $filters['search'];
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
-            });
-        }
+            // Filter by category
+            if (!empty($filters['category_id'])) {
+                $query->where('category_id', $filters['category_id']);
+            }
 
-        // Price range filter
-        if (!empty($filters['min_price'])) {
-            $query->where('price', '>=', $filters['min_price']);
-        }
-        if (!empty($filters['max_price'])) {
-            $query->where('price', '<=', $filters['max_price']);
-        }
+            // Search by name or description
+            if (!empty($filters['search'])) {
+                $search = $filters['search'];
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('description', 'like', "%{$search}%");
+                });
+            }
 
-        // Filter by featured products
-        if (isset($filters['featured']) && $filters['featured'] !== null) {
-            $query->where('featured', (bool)$filters['featured']);
-        }
+            // Price range filter
+            if (!empty($filters['min_price'])) {
+                $query->where('price', '>=', $filters['min_price']);
+            }
+            if (!empty($filters['max_price'])) {
+                $query->where('price', '<=', $filters['max_price']);
+            }
 
-        // Sorting
-        $sortBy = $filters['sort_by'] ?? 'created_at';
-        $sortOrder = $filters['sort_order'] ?? 'desc';
-        $query->orderBy($sortBy, $sortOrder);
+            // Filter by featured products
+            if (isset($filters['featured']) && $filters['featured'] !== null) {
+                $query->where('featured', (bool)$filters['featured']);
+            }
 
-        return $query->paginate($perPage);
+            // Sorting
+            $sortBy = $filters['sort_by'] ?? 'created_at';
+            $sortOrder = $filters['sort_order'] ?? 'desc';
+            $query->orderBy($sortBy, $sortOrder);
+
+            return $query->paginate($perPage);
+        });
     }
 
     public function getProductWithRelations(Product $product): Product
@@ -77,6 +82,8 @@ class ProductService
                     ]);
                 }
             }
+
+            \Illuminate\Support\Facades\Cache::flush();
 
             return $product->load(['category', 'images']);
         });
@@ -110,6 +117,8 @@ class ProductService
                 }
             }
 
+            \Illuminate\Support\Facades\Cache::flush();
+
             return $product->fresh(['category', 'images']);
         });
     }
@@ -122,6 +131,8 @@ class ProductService
             
             // Delete the product
             $product->delete();
+            
+            \Illuminate\Support\Facades\Cache::flush();
         });
     }
 
@@ -132,5 +143,6 @@ class ProductService
         }
 
         $product->decrement('stock', $quantity);
+        \Illuminate\Support\Facades\Cache::flush();
     }
 }
