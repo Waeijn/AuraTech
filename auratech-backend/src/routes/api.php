@@ -57,6 +57,16 @@ Route::prefix('products')->group(function () {
     Route::get('/', [ProductController::class, 'index']);
     Route::get('/{product}', [ProductController::class, 'show']);
 
+    // Product Reviews (public read)
+    Route::get('/{product}/reviews', [\App\Http\Controllers\ReviewController::class, 'index']);
+
+    // Product Reviews (auth required for write)
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/{product}/reviews', [\App\Http\Controllers\ReviewController::class, 'store']);
+        Route::put('/{product}/reviews/{review}', [\App\Http\Controllers\ReviewController::class, 'update']);
+        Route::delete('/{product}/reviews/{review}', [\App\Http\Controllers\ReviewController::class, 'destroy']);
+    });
+
     // Admin Product Management
     Route::middleware(['auth:sanctum', 'admin'])->group(function () {
         Route::post('/', [ProductController::class, 'store']);

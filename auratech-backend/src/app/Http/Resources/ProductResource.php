@@ -32,6 +32,16 @@ class ProductResource extends JsonResource
             ),
             'images' => ProductImageResource::collection($this->whenLoaded('images')),
 
+            // Reviews summary
+            'average_rating' => $this->when(
+                $this->relationLoaded('reviews'),
+                fn() => round($this->reviews->avg('rating'), 1) ?: 0
+            ),
+            'review_count' => $this->when(
+                $this->relationLoaded('reviews'),
+                fn() => $this->reviews->count()
+            ),
+
             'created_at' => $this->created_at?->toISOString(),
             'updated_at' => $this->updated_at?->toISOString()
         ];

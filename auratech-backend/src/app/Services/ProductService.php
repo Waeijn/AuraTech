@@ -14,7 +14,7 @@ class ProductService
         $cacheKey = 'products:' . md5(json_encode($filters) . '_' . $perPage . '_' . $page);
 
         return \Illuminate\Support\Facades\Cache::remember($cacheKey, now()->addMinutes(60), function () use ($filters, $perPage) {
-            $query = Product::with(['category', 'images']);
+            $query = Product::with(['category', 'images', 'reviews']);
 
             $query->where('stock', '>', 0);
 
@@ -56,7 +56,7 @@ class ProductService
 
     public function getProductWithRelations(Product $product): Product
     {
-        return $product->load(['category', 'images']);
+        return $product->load(['category', 'images', 'reviews.user']);
     }
 
     public function createProduct(array $data): Product

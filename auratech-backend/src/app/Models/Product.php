@@ -52,6 +52,11 @@ class Product extends Model
         return $this->hasMany(OrderItem::class);
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
     public function scopeInStock($query)
     {
         return $query->where('stock', '>', 0);
