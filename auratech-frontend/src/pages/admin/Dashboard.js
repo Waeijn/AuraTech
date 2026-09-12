@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import AdminLayout from "../../components/AdminLayout";
-import { orderService } from "../../services/orderService";
-import { productService } from "../../services/productService";
 import { api } from "../../utils/api";
 import { API_ENDPOINTS } from "../../config/api";
 // Skeleton component for an individual stat card
