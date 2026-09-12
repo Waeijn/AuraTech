@@ -1,4 +1,4 @@
-export const API_BASE_URL = "http://127.0.0.1:8082/api";
+export const API_BASE_URL = "http://localhost:18082/api";
 
 export const API_ENDPOINTS = {
   // Auth
@@ -30,4 +30,7 @@ export const API_ENDPOINTS = {
   ORDER_DETAIL: (id) => `/orders/${id}`,
   CHECKOUT: "/orders/checkout",
   CANCEL_ORDER: (id) => `/orders/${id}/cancel`,
+
+  // Reviews
+  PRODUCT_REVIEWS: (id) => `/products/${id}/reviews`,
 };

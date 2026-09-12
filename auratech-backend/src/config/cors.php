@@ -15,7 +15,7 @@ return [
     'allowed_methods' => ['*'],
 
     // CRITICAL FIX: Allow your React Frontend URL specifically, or '*' for all
-    'allowed_origins' => ['http://localhost:3000', '*'],
+    'allowed_origins' => ['http://localhost:4000', 'http://localhost:3000', '*'],
 
     'allowed_origins_patterns' => [],
 
