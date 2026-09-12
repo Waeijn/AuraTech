@@ -52,6 +52,8 @@ const ProductList = () => {
             p.images?.[0]?.url || p.image || "/img/products/placeholder.png",
           description: p.description,
           stock: p.stock,
+          average_rating: p.average_rating || 0,
+          review_count: p.review_count || 0,
         }));
 
         setProducts(mappedProducts);

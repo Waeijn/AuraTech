@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import StarRating from "./StarRating";
 import "../styles/product.css";
 
 /**
@@ -43,6 +44,18 @@ export default function ProductCard({ product }) {
       </div>
 
       <h3>{product.name}</h3>
+
+      {/* Star Rating */}
+      {product.average_rating !== undefined && (
+        <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "4px", justifyContent: "center" }}>
+          <StarRating rating={Math.round(product.average_rating)} size={14} />
+          <span style={{ color: "#999", fontSize: "12px" }}>
+            {product.average_rating > 0 ? `${product.average_rating}` : "No reviews"}
+            {product.review_count > 0 && ` (${product.review_count})`}
+          </span>
+        </div>
+      )}
+
       {/* Price uses backend raw value and formats with commas */}
       <p className="product-price">₱{product.price.toLocaleString()}</p>
 

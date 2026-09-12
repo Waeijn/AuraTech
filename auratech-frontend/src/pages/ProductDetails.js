@@ -4,6 +4,7 @@ import "../styles/product.css";
 import { useAuth } from "../components/Navbar";
 import { productService } from "../services/productService";
 import { cartService } from "../services/cartService";
+import ReviewSection from "../components/ReviewSection";
 
 /**
  * Displays comprehensive details for a single product, including stock,
@@ -500,6 +501,9 @@ const ProductDetails = () => {
                 </table>
               </div>
             )}
+
+          {/* Customer Reviews Section */}
+          <ReviewSection productId={product.id} />
         </div>
       </div>
     </div>
